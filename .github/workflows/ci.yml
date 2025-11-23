@@ -1,0 +1,30 @@
+# -------------------------------------------------------
+# NOMBRE DEL WORKFLOW
+# --------------------------------------------------
+name: Deploy estático a Netlify
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar netlify-cli
+        run: npm install -g netlify-cli
+
+      - name: Desplegar en Netlify
+        run: netlify deploy --dir=./ --prod --message "Deploy desde GitHub Actions"
